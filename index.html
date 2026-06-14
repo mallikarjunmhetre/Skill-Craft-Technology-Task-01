@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CipherX – Advanced Caesar Cipher Toolkit</title>
+  <meta name="description" content="A premium cybersecurity toolkit for Caesar cipher encryption, decryption, frequency analysis, and brute-force attacks."/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+<div class="bg-animated"></div>
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="logo-icon">🔐</div>
+    <span class="brand-name">CIPHERX</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/" class="active">🏠 Home</a></li>
+    <li><a href="/encrypt">🔒 Encrypt</a></li>
+    <li><a href="/decrypt">🔓 Decrypt</a></li>
+    <li><a href="/tools">🛠️ Tools</a></li>
+    <li><a href="/about">📖 About</a></li>
+  </ul>
+</nav>
+<!-- ══ HERO ══ -->
+<section class="page-hero">
+  <div class="badge">🛡️ Cybersecurity Toolkit v2.0</div>
+  <h1 class="page-title glitch-text">
+    <span class="gradient-text">CIPHERX</span>
+  </h1>
+  <p class="page-title" style="font-size:clamp(1.1rem,2.5vw,1.8rem);color:var(--text-muted);font-weight:400;margin-top:-0.5rem;">
+    Advanced Caesar Cipher Toolkit
+  </p>
+  <p class="page-subtitle mt-2">
+    Explore the world of classical cryptography. Encrypt, decrypt, analyze, and break
+    Caesar ciphers with a professional cybersecurity-grade interface.
+  </p>
+  <div class="btn-group" style="justify-content:center;margin-top:2rem;">
+    <a href="/encrypt" class="btn btn-primary">🔒 Start Encrypting</a>
+    <a href="/decrypt" class="btn btn-secondary">🔓 Decrypt Message</a>
+  </div>
+</section>
+<!-- ══ LIVE DEMO ══ -->
+<section class="section">
+  <div class="container">
+    <div class="card scanline-effect">
+      <div class="card-header">
+        <div class="card-icon cyan">⚡</div>
+        <span class="card-title">LIVE QUICK DEMO</span>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div class="form-group">
+            <label class="form-label">Input Message</label>
+            <textarea id="demoInput" class="form-control" rows="3" placeholder="Type your secret message…">Hello World</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Shift Key: <span id="demoShiftLabel">3</span></label>
+            <div class="shift-control">
+              <input type="range" id="demoShift" class="shift-slider" min="1" max="25" value="3" oninput="liveDemo()"/>
+              <span class="shift-display" id="demoShiftNum">3</span>
+            </div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="liveDemo()">⚡ Encrypt</button>
+            <button class="btn btn-secondary" onclick="clearDemo()">✕ Clear</button>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">Encrypted Output</label>
+          <div class="output-box glow" id="demoOutput">
+            <span class="output-placeholder">Encrypted text will appear here…</span>
+          </div>
+          <div class="stats-grid mt-2" id="demoStats" style="display:none;">
+            <div class="stat-item">
+              <div class="stat-value" id="statChars">0</div>
+              <div class="stat-label">Characters</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="statLetters">0</div>
+              <div class="stat-label">Letters</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="statEntropy">0</div>
+              <div class="stat-label">Entropy</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ══ FEATURE CARDS ══ -->
+<section class="section">
+  <div class="container">
+    <h2 class="text-center mb-4" style="font-family:var(--font-display);font-size:1.2rem;letter-spacing:2px;color:var(--accent-cyan);">EXPLORE THE TOOLKIT</h2>
+    <div class="grid-3" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));">
+      <a href="/encrypt" class="feature-card">
+        <span class="feature-icon">🔒</span>
+        <h3>ENCRYPT</h3>
+        <p>Transform plaintext into ciphertext using Caesar shift. See real-time frequency analysis of your message.</p>
+        <div class="feature-arrow">Go to Encryptor →</div>
+      </a>
+      <a href="/decrypt" class="feature-card">
+        <span class="feature-icon">🔓</span>
+        <h3>DECRYPT</h3>
+        <p>Recover original messages from ciphertext. Use brute-force attack to try all 25 possible shifts.</p>
+        <div class="feature-arrow">Go to Decryptor →</div>
+      </a>
+      <a href="/tools" class="feature-card">
+        <span class="feature-icon">🛠️</span>
+        <h3>CRYPTO TOOLS</h3>
+        <p>Vigenère cipher, Atbash, ROT13, hash functions (MD5, SHA-256), Base64 encoding, and more.</p>
+        <div class="feature-arrow">Open Tools →</div>
+      </a>
+      <a href="/about" class="feature-card">
+        <span class="feature-icon">📖</span>
+        <h3>HISTORY & THEORY</h3>
+        <p>Learn about the Caesar cipher's origins, cryptanalysis techniques, and its place in cybersecurity history.</p>
+        <div class="feature-arrow">Read More →</div>
+      </a>
+      <div class="feature-card" style="cursor:default;" onclick="showAlphabetMap()">
+        <span class="feature-icon">🔡</span>
+        <h3>ALPHABET MAP</h3>
+        <p>Visualise the letter-to-letter substitution for any shift value interactively.</p>
+        <div class="feature-arrow">View Map →</div>
+      </div>
+      <div class="feature-card" style="cursor:default;" onclick="window.location='/tools#freq'">
+        <span class="feature-icon">📊</span>
+        <h3>FREQUENCY ANALYSIS</h3>
+        <p>Analyze letter frequencies in your text — the classic method to crack substitution ciphers.</p>
+        <div class="feature-arrow">Analyze →</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ══ ALPHABET MAP MODAL ══ -->
+<div id="alphaModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);align-items:center;justify-content:center;">
+  <div class="card" style="max-width:700px;width:90%;max-height:80vh;overflow-y:auto;">
+    <div class="card-header">
+      <div class="card-icon cyan">🔡</div>
+      <span class="card-title">ALPHABET SUBSTITUTION MAP</span>
+      <button onclick="closeModal()" style="margin-left:auto;background:none;border:none;color:var(--accent-pink);font-size:1.5rem;cursor:pointer;">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Shift Value: <span id="mapShiftLabel">3</span></label>
+      <input type="range" class="shift-slider" id="mapShift" min="1" max="25" value="3" oninput="renderMap(this.value)" style="width:100%"/>
+    </div>
+    <div id="alphaMapGrid" style="display:grid;grid-template-columns:repeat(13,1fr);gap:4px;margin-top:1rem;"></div>
+  </div>
+</div>
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <p>🔐 CIPHERX &nbsp;|&nbsp; Built with Python Flask + Vanilla JS &nbsp;|&nbsp; <span style="color:var(--accent-cyan);">Classical Cryptography Toolkit</span></p>
+</footer>
+<!-- ══ TOAST ══ -->
+<div class="toast-container" id="toastContainer"></div>
+<script src="/static/js/common.js"></script>
+<script>
+  // ── Live Demo ──
+  async function liveDemo() {
+    const text  = document.getElementById('demoInput').value;
+    const shift = parseInt(document.getElementById('demoShift').value);
+    document.getElementById('demoShiftNum').textContent   = shift;
+    document.getElementById('demoShiftLabel').textContent = shift;
+    // update slider gradient
+    const pct = ((shift - 1) / 24 * 100).toFixed(1);
+    document.getElementById('demoShift').style.setProperty('--slider-pct', pct + '%');
+    if (!text) { return; }
+    try {
+      const res  = await fetch('/api/encrypt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, shift })
+      });
+      const data = await res.json();
+      document.getElementById('demoOutput').textContent = data.encrypted;
+      document.getElementById('demoOutput').classList.add('glow');
+      // stats
+      document.getElementById('demoStats').style.display = 'grid';
+      document.getElementById('statChars').textContent   = data.stats.total_chars;
+      document.getElementById('statLetters').textContent = data.stats.letters;
+      document.getElementById('statEntropy').textContent = data.stats.entropy;
+    } catch(e) { showToast('API error: ' + e.message, 'error'); }
+  }
+  function clearDemo() {
+    document.getElementById('demoInput').value = '';
+    document.getElementById('demoOutput').innerHTML = '<span class="output-placeholder">Encrypted text will appear here…</span>';
+    document.getElementById('demoStats').style.display = 'none';
+  }
+  // Run on load
+  liveDemo();
+  document.getElementById('demoInput').addEventListener('input', liveDemo);
+  // ── Alphabet Map ──
+  function showAlphabetMap() {
+    document.getElementById('alphaModal').style.display = 'flex';
+    renderMap(3);
+  }
+  function closeModal() {
+    document.getElementById('alphaModal').style.display = 'none';
+  }
+  function renderMap(shift) {
+    shift = parseInt(shift);
+    document.getElementById('mapShiftLabel').textContent = shift;
+    const grid = document.getElementById('alphaMapGrid');
+    grid.innerHTML = '';
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    alphabet.forEach(letter => {
+      const shifted = String.fromCharCode(((letter.charCodeAt(0) - 65 + shift) % 26) + 65);
+      const item = document.createElement('div');
+      item.style.cssText = 'text-align:center;padding:0.5rem 0.25rem;background:rgba(0,255,255,0.05);border:1px solid rgba(0,255,255,0.1);border-radius:8px;';
+      item.innerHTML = `<div style="font-family:var(--font-mono);font-weight:700;color:var(--accent-cyan);">${letter}</div>
+                        <div style="font-size:0.6rem;color:var(--text-muted);">↓</div>
+                        <div style="font-family:var(--font-mono);font-weight:700;color:var(--accent-pink);">${shifted}</div>`;
+      grid.appendChild(item);
+    });
+  }
+</script>
+</body>
+</html>
