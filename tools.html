@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crypto Tools – CipherX</title>
+  <meta name="description" content="Advanced cryptography tools: Vigenère cipher, Atbash, ROT13, MD5/SHA-256 hashing, Base64 encoding, and frequency analysis."/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+<div class="bg-animated"></div>
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="logo-icon">🔐</div>
+    <span class="brand-name">CIPHERX</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">🏠 Home</a></li>
+    <li><a href="/encrypt">🔒 Encrypt</a></li>
+    <li><a href="/decrypt">🔓 Decrypt</a></li>
+    <li><a href="/tools" class="active">🛠️ Tools</a></li>
+    <li><a href="/about">📖 About</a></li>
+  </ul>
+</nav>
+<section class="page-hero">
+  <div class="badge" style="border-color:rgba(123,47,255,0.5);color:var(--accent-purple);">🛠️ Advanced Cryptography Tools</div>
+  <h1 class="page-title"><span style="background:linear-gradient(135deg,var(--accent-purple),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">CRYPTO TOOLS</span></h1>
+  <p class="page-subtitle">A full cryptography laboratory — Vigenère cipher, Atbash, ROT13, hash functions, Base64, and frequency analysis all in one place.</p>
+</section>
+<section class="section">
+  <div class="container">
+    <!-- ── TOOL TABS ── -->
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem;" id="toolTabs">
+      <button class="btn btn-primary"   onclick="showTool('vigenere')"  id="tab-vigenere">🔑 Vigenère</button>
+      <button class="btn btn-secondary" onclick="showTool('atbash')"    id="tab-atbash">🔁 Atbash</button>
+      <button class="btn btn-secondary" onclick="showTool('rot13')"     id="tab-rot13">↺ ROT13</button>
+      <button class="btn btn-secondary" onclick="showTool('hash')"      id="tab-hash">🔮 Hash</button>
+      <button class="btn btn-secondary" onclick="showTool('freq')"      id="tab-freq">📊 Frequency</button>
+      <button class="btn btn-secondary" onclick="showTool('base64')"    id="tab-base64">📦 Base64</button>
+    </div>
+    <!-- ══════════════ VIGENÈRE ══════════════ -->
+    <div id="tool-vigenere" class="tool-panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon purple">🔑</div>
+            <span class="card-title">VIGENÈRE CIPHER</span>
+            <span class="tag tag-purple" style="margin-left:auto;">Polyalphabetic</span>
+          </div>
+          <div class="alert alert-info mb-3">
+            🔐 <span>The Vigenère cipher uses a <strong>keyword</strong> to shift each letter by a different amount — much stronger than Caesar!</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea id="vigenereInput" class="form-control" rows="4" placeholder="Enter your message…"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Keyword</label>
+            <input type="text" id="vigenereKey" class="form-control" placeholder="e.g. SECRET" style="height:48px;text-transform:uppercase;"/>
+          </div>
+          <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+            <button class="btn btn-primary" style="flex:1;" onclick="vigenere('encrypt')">🔒 Encrypt</button>
+            <button class="btn btn-success" style="flex:1;" onclick="vigenere('decrypt')">🔓 Decrypt</button>
+          </div>
+          <label class="form-label">Output</label>
+          <div class="output-box" id="vigenereOutput">
+            <span class="output-placeholder">Result will appear here…</span>
+          </div>
+          <button class="copy-btn" onclick="copyOutput('vigenereOutput')">📋 Copy</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon purple">📖</div>
+            <span class="card-title">HOW VIGENÈRE WORKS</span>
+          </div>
+          <div style="font-size:0.85rem;color:var(--text-muted);line-height:1.8;">
+            <p class="mb-2">For keyword <code style="color:var(--accent-cyan);">KEY</code>:</p>
+            <table style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:0.8rem;">
+              <tr>
+                <td style="padding:0.4rem;color:var(--accent-green);">Plaintext:</td>
+                <td id="vigExPlain" style="padding:0.4rem;letter-spacing:2px;color:var(--text-primary);">H E L L O</td>
+              </tr>
+              <tr>
+                <td style="padding:0.4rem;color:var(--accent-cyan);">Key repeats:</td>
+                <td id="vigExKey" style="padding:0.4rem;letter-spacing:2px;color:var(--accent-purple);">K E Y K E</td>
+              </tr>
+              <tr>
+                <td style="padding:0.4rem;color:var(--accent-pink);">Shift values:</td>
+                <td style="padding:0.4rem;letter-spacing:2px;color:var(--accent-amber);">10 4 24 10 4</td>
+              </tr>
+              <tr style="border-top:1px solid var(--border-subtle);">
+                <td style="padding:0.4rem;color:var(--accent-pink);">Ciphertext:</td>
+                <td id="vigExCipher" style="padding:0.4rem;letter-spacing:2px;color:var(--accent-pink);font-weight:700;">R I J V S</td>
+              </tr>
+            </table>
+            <div class="mt-3">
+              <p>Formula: <code style="color:var(--accent-cyan);">C = (P + K) mod 26</code></p>
+              <p>Decrypt: <code style="color:var(--accent-pink);">P = (C - K + 26) mod 26</code></p>
+            </div>
+            <div class="alert alert-warning mt-3">
+              🛡️ Vigenère was considered unbreakable for 300 years. It was cracked by Charles Babbage in 1854.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ══════════════ ATBASH ══════════════ -->
+    <div id="tool-atbash" class="tool-panel" style="display:none;">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon amber">🔁</div>
+            <span class="card-title">ATBASH CIPHER</span>
+            <span class="tag tag-cyan" style="margin-left:auto;">Hebrew Origin</span>
+          </div>
+          <div class="alert alert-info mb-3">
+            📜 <span>Atbash maps A↔Z, B↔Y, C↔X… It is its own inverse — encrypting and decrypting use the same operation!</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Input Text</label>
+            <textarea id="atbashInput" class="form-control" rows="5" placeholder="Enter text to apply Atbash cipher…"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="atbash()" style="width:100%;">🔁 Apply Atbash</button>
+          <div class="mt-3">
+            <label class="form-label">Output</label>
+            <div class="output-box" id="atbashOutput"><span class="output-placeholder">Result will appear here…</span></div>
+            <button class="copy-btn" onclick="copyOutput('atbashOutput')">📋 Copy</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon amber">🗺️</div>
+            <span class="card-title">ATBASH MAPPING</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(13,1fr);gap:4px;" id="atbashMap"></div>
+        </div>
+      </div>
+    </div>
+    <!-- ══════════════ ROT13 ══════════════ -->
+    <div id="tool-rot13" class="tool-panel" style="display:none;">
+      <div class="card" style="max-width:700px;margin:0 auto;">
+        <div class="card-header">
+          <div class="card-icon cyan">↺</div>
+          <span class="card-title">ROT13 CIPHER</span>
+          <span class="tag tag-cyan" style="margin-left:auto;">Caesar Shift = 13</span>
+        </div>
+        <div class="alert alert-info mb-3">
+          ♻️ <span>ROT13 is a special case of Caesar cipher with shift 13. Because the alphabet has 26 letters, applying ROT13 twice returns the original text!</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Input Text</label>
+          <textarea id="rot13Input" class="form-control" rows="5"
+            placeholder="Enter text… ROT13 output appears live!" oninput="rot13Live()"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ROT13 Output (bidirectional)</label>
+          <div class="output-box" id="rot13Output"><span class="output-placeholder">ROT13 result…</span></div>
+          <button class="copy-btn" onclick="copyOutput('rot13Output')">📋 Copy</button>
+        </div>
+        <div class="alert alert-warning mt-2">
+          🔁 <span>ROT13 is not secure — it's mainly used to obscure spoilers and puzzle answers, not for real encryption.</span>
+        </div>
+      </div>
+    </div>
+    <!-- ══════════════ HASH ══════════════ -->
+    <div id="tool-hash" class="tool-panel" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon pink">🔮</div>
+          <span class="card-title">HASH FUNCTIONS</span>
+          <span class="tag tag-pink" style="margin-left:auto;">One-way Functions</span>
+        </div>
+        <div class="alert alert-warning mb-3">
+          ⚠️ <span>Hash functions are <strong>one-way</strong> — you cannot reverse them to get the original text. They're used for password storage, file integrity, and digital signatures.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Input Text</label>
+          <textarea id="hashInput" class="form-control" rows="3" placeholder="Enter text to hash…"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="computeHash()" style="width:100%;">🔮 Compute Hashes</button>
+        <div id="hashResults" style="display:none;margin-top:1.5rem;">
+          <div class="form-group">
+            <label class="form-label" style="color:#f39c12;">MD5 (128-bit — Legacy, Avoid)</label>
+            <div class="output-box" id="hashMD5" style="font-size:0.8rem;min-height:auto;padding:0.75rem;"></div>
+            <button class="copy-btn" style="top:0.5rem;" onclick="copyOutput('hashMD5')">📋</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="color:var(--accent-amber);">SHA-1 (160-bit — Deprecated)</label>
+            <div class="output-box" id="hashSHA1" style="font-size:0.8rem;min-height:auto;padding:0.75rem;"></div>
+            <button class="copy-btn" style="top:0.5rem;" onclick="copyOutput('hashSHA1')">📋</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="color:var(--accent-green);">SHA-256 (256-bit — Industry Standard ✓)</label>
+            <div class="output-box" id="hashSHA256" style="font-size:0.8rem;min-height:auto;padding:0.75rem;color:var(--accent-green);"></div>
+            <button class="copy-btn" style="top:0.5rem;" onclick="copyOutput('hashSHA256')">📋</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="color:var(--accent-purple);">Base64 (Encoding, NOT Encryption)</label>
+            <div class="output-box" id="hashBase64" style="font-size:0.8rem;min-height:auto;padding:0.75rem;color:var(--accent-purple);"></div>
+            <button class="copy-btn" style="top:0.5rem;" onclick="copyOutput('hashBase64')">📋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ══════════════ FREQUENCY ══════════════ -->
+    <div id="tool-freq" class="tool-panel" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon green">📊</div>
+          <span class="card-title">FREQUENCY ANALYSIS</span>
+          <span class="tag tag-green" style="margin-left:auto;">Cryptanalysis</span>
+        </div>
+        <div class="alert alert-info mb-3">
+          🔍 <span>Frequency analysis is the study of letter occurrence in ciphertext. The most common letter in English is <strong>E (12.7%)</strong>. If the most common cipher letter is X, X might represent E (Caesar shift 19).</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Text to Analyze</label>
+          <textarea id="freqInput" class="form-control" rows="5"
+            placeholder="Paste any text (plaintext or ciphertext) for analysis…"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="analyzeFreq()" style="width:100%;">📊 Analyze</button>
+        <div id="freqResults" style="display:none;margin-top:1.5rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+            <label class="form-label" style="margin:0;">Letter Frequency Distribution</label>
+            <span id="freqEntropy" class="tag tag-cyan">Entropy: –</span>
+          </div>
+          <div id="freqMainChart" style="display:flex;align-items:flex-end;gap:3px;height:150px;padding:1rem;background:rgba(0,0,0,0.3);border-radius:var(--radius-md);border:1px solid var(--border-subtle);overflow-x:auto;"></div>
+          <div class="stats-grid mt-3" id="freqTopStats"></div>
+          <div class="alert alert-warning mt-3" id="freqGuess" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+    <!-- ══════════════ BASE64 ══════════════ -->
+    <div id="tool-base64" class="tool-panel" style="display:none;">
+      <div class="card" style="max-width:700px;margin:0 auto;">
+        <div class="card-header">
+          <div class="card-icon purple">📦</div>
+          <span class="card-title">BASE64 ENCODE / DECODE</span>
+          <span class="tag tag-purple" style="margin-left:auto;">Encoding</span>
+        </div>
+        <div class="alert alert-warning mb-3">
+          📌 <span>Base64 is an <strong>encoding scheme</strong>, NOT encryption. It converts binary data to text. Anyone can decode it without a key — do NOT use it to secure sensitive data!</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Input</label>
+          <textarea id="b64Input" class="form-control" rows="4" placeholder="Enter text to encode or Base64 to decode…"></textarea>
+        </div>
+        <div style="display:flex;gap:0.5rem;">
+          <button class="btn btn-primary" style="flex:1;" onclick="b64Encode()">📦 Encode to Base64</button>
+          <button class="btn btn-success" style="flex:1;" onclick="b64Decode()">📤 Decode from Base64</button>
+        </div>
+        <div class="form-group mt-3">
+          <label class="form-label">Output</label>
+          <div class="output-box" id="b64Output"><span class="output-placeholder">Result will appear here…</span></div>
+          <button class="copy-btn" onclick="copyOutput('b64Output')">📋 Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer class="footer">
+  <p>🔐 CIPHERX &nbsp;|&nbsp; Crypto Tools &nbsp;|&nbsp; <a href="/" style="color:var(--accent-cyan);">Back to Home</a></p>
+</footer>
+<div class="toast-container" id="toastContainer"></div>
+<script src="/static/js/common.js"></script>
+<script>
+  // ── Tab Switching ──
+  function showTool(name) {
+    document.querySelectorAll('.tool-panel').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('#toolTabs .btn').forEach(b => {
+      b.className = 'btn btn-secondary';
+    });
+    document.getElementById('tool-' + name).style.display = 'block';
+    const tab = document.getElementById('tab-' + name);
+    if (tab) tab.className = 'btn btn-primary';
+  }
+  // ── Atbash Map ──
+  function buildAtbashMap() {
+    const grid = document.getElementById('atbashMap');
+    const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    A.forEach(ch => {
+      const mirror = String.fromCharCode(90 - (ch.charCodeAt(0) - 65));
+      const item = document.createElement('div');
+      item.style.cssText = 'text-align:center;padding:0.4rem 0.2rem;background:rgba(255,165,0,0.05);border:1px solid rgba(255,165,0,0.1);border-radius:6px;';
+      item.innerHTML = `<div style="font-family:var(--font-mono);font-weight:700;color:var(--accent-amber);font-size:0.8rem;">${ch}</div>
+                        <div style="font-size:0.55rem;color:var(--text-muted);">↕</div>
+                        <div style="font-family:var(--font-mono);font-weight:700;color:var(--accent-pink);font-size:0.8rem;">${mirror}</div>`;
+      grid.appendChild(item);
+    });
+  }
+  buildAtbashMap();
+  // ── Vigenère ──
+  async function vigenere(mode) {
+    const text    = document.getElementById('vigenereInput').value.trim();
+    const keyword = document.getElementById('vigenereKey').value.trim();
+    if (!text || !keyword) { showToast('Text and keyword are required!', 'error'); return; }
+    const res  = await fetch('/api/vigenere', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, keyword, mode })
+    });
+    const data = await res.json();
+    document.getElementById('vigenereOutput').textContent = data.result;
+    showToast(`Vigenère ${mode === 'encrypt' ? 'encryption' : 'decryption'} done!`, 'success');
+  }
+  // ── Atbash ──
+  async function atbash() {
+    const text = document.getElementById('atbashInput').value.trim();
+    if (!text) { showToast('Please enter text!', 'error'); return; }
+    const res  = await fetch('/api/atbash', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    document.getElementById('atbashOutput').textContent = data.result;
+    showToast('Atbash applied!', 'success');
+  }
+  // ── ROT13 Live ──
+  async function rot13Live() {
+    const text = document.getElementById('rot13Input').value;
+    if (!text) {
+      document.getElementById('rot13Output').innerHTML = '<span class="output-placeholder">ROT13 result…</span>';
+      return;
+    }
+    const res  = await fetch('/api/rot13', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    document.getElementById('rot13Output').textContent = data.result;
+  }
+  // ── Hash ──
+  async function computeHash() {
+    const text = document.getElementById('hashInput').value.trim();
+    if (!text) { showToast('Please enter text to hash!', 'error'); return; }
+    const res  = await fetch('/api/hash', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    document.getElementById('hashResults').style.display = 'block';
+    document.getElementById('hashMD5').textContent    = data.md5;
+    document.getElementById('hashSHA1').textContent   = data.sha1;
+    document.getElementById('hashSHA256').textContent = data.sha256;
+    document.getElementById('hashBase64').textContent = data.base64;
+    showToast('Hashes computed!', 'success');
+  }
+  // ── Frequency ──
+  async function analyzeFreq() {
+    const text = document.getElementById('freqInput').value.trim();
+    if (!text) { showToast('Please enter text!', 'error'); return; }
+    const res  = await fetch('/api/frequency', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    document.getElementById('freqResults').style.display = 'block';
+    document.getElementById('freqEntropy').textContent = `Entropy: ${data.entropy}`;
+    const freq  = data.frequency;
+    const chart = document.getElementById('freqMainChart');
+    chart.innerHTML = '';
+    const maxPct = Math.max(...Object.values(freq).map(v => v.percentage));
+    let topLetter = 'E';
+    let topPct    = 0;
+    Object.entries(freq).forEach(([l, d]) => {
+      if (d.percentage > topPct) { topPct = d.percentage; topLetter = l; }
+      const h  = maxPct > 0 ? (d.percentage / maxPct * 120).toFixed(0) : 2;
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:2px;min-width:20px;';
+      wrap.innerHTML = `
+        <span style="font-size:0.6rem;color:var(--text-muted);">${d.percentage > 0 ? d.percentage.toFixed(1) : ''}</span>
+        <div style="width:18px;height:${h}px;background:linear-gradient(180deg,var(--accent-cyan),var(--accent-purple));border-radius:3px 3px 0 0;opacity:${d.percentage>0?0.5+d.percentage/maxPct*0.5:0.1};transition:height 0.5s ease;" title="${l}: ${d.percentage}%"></div>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:${d.percentage===topPct?'var(--accent-cyan)':'var(--text-muted)'};">${l}</span>`;
+      chart.appendChild(wrap);
+    });
+    // Top 5 letters
+    const sorted = Object.entries(freq).sort((a,b) => b[1].percentage - a[1].percentage).slice(0,5);
+    const statsEl = document.getElementById('freqTopStats');
+    statsEl.innerHTML = sorted.map(([l, d]) =>
+      `<div class="stat-item">
+        <div class="stat-value" style="color:var(--accent-cyan);">${l}</div>
+        <div class="stat-label">${d.percentage}%</div>
+      </div>`).join('');
+    // Guess shift
+    const engFreqOrder = 'ETAOINSHRDLCUMWFGYPBVKJXQZ';
+    const guessShift = ((topLetter.charCodeAt(0) - 'E'.charCodeAt(0) + 26) % 26);
+    const guessEl = document.getElementById('freqGuess');
+    if (topPct > 0) {
+      guessEl.style.display = 'flex';
+      guessEl.innerHTML = `🎯 <span>Most frequent letter is <strong style="color:var(--accent-cyan);">${topLetter} (${topPct.toFixed(1)}%)</strong>. If this is English ciphertext, the Caesar shift might be <strong style="color:var(--accent-pink);">${guessShift}</strong> — try it on the <a href="/decrypt" style="color:var(--accent-cyan);">Decrypt page</a>!</span>`;
+    }
+  }
+  // ── Base64 ──
+  function b64Encode() {
+    const text = document.getElementById('b64Input').value;
+    if (!text) { showToast('Please enter text!', 'error'); return; }
+    try {
+      const encoded = btoa(unescape(encodeURIComponent(text)));
+      document.getElementById('b64Output').textContent = encoded;
+      showToast('Encoded to Base64!', 'success');
+    } catch(e) { showToast('Encoding failed!', 'error'); }
+  }
+  function b64Decode() {
+    const text = document.getElementById('b64Input').value.trim();
+    if (!text) { showToast('Please enter Base64 text!', 'error'); return; }
+    try {
+      const decoded = decodeURIComponent(escape(atob(text)));
+      document.getElementById('b64Output').textContent = decoded;
+      showToast('Decoded from Base64!', 'success');
+    } catch(e) { showToast('Invalid Base64 string!', 'error'); }
+  }
+  // Init
+  showTool('vigenere');
+  // Handle #freq anchor
+  if (window.location.hash === '#freq') showTool('freq');
+</script>
+</body>
+</html>
