@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Decrypt – CipherX</title>
+  <meta name="description" content="Decrypt Caesar cipher messages. Use known shift or brute-force all 25 possible shifts."/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+<div class="bg-animated"></div>
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="logo-icon">🔐</div>
+    <span class="brand-name">CIPHERX</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">🏠 Home</a></li>
+    <li><a href="/encrypt">🔒 Encrypt</a></li>
+    <li><a href="/decrypt" class="active">🔓 Decrypt</a></li>
+    <li><a href="/tools">🛠️ Tools</a></li>
+    <li><a href="/about">📖 About</a></li>
+  </ul>
+</nav>
+<section class="page-hero">
+  <div class="badge" style="border-color:rgba(255,45,120,0.5);color:var(--accent-pink);">🔓 Caesar Cipher Decryptor</div>
+  <h1 class="page-title"><span style="background:linear-gradient(135deg,var(--accent-pink),var(--accent-amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">DECRYPT</span></h1>
+  <p class="page-subtitle">Recover original messages from ciphertext. Use a known shift key or launch a brute-force attack to try all 25 possibilities.</p>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="grid-2">
+      <!-- ── INPUT PANEL ── -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon pink">🔒</div>
+          <span class="card-title">CIPHERTEXT INPUT</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ciphertext (Encrypted Message)</label>
+          <textarea id="inputText" class="form-control" rows="6"
+            placeholder="Paste your encrypted message here…"></textarea>
+        </div>
+        <!-- Mode Tabs -->
+        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+          <button id="tabKnown" class="btn btn-primary"
+            style="flex:1;padding:0.6rem;" onclick="switchMode('known')">🔑 Known Key</button>
+          <button id="tabBrute" class="btn btn-secondary"
+            style="flex:1;padding:0.6rem;" onclick="switchMode('brute')">💥 Brute Force</button>
+        </div>
+        <!-- Known Key Mode -->
+        <div id="knownKeyPanel">
+          <div class="form-group">
+            <label class="form-label">Shift Key</label>
+            <div class="shift-control">
+              <input type="range" id="shiftSlider" class="shift-slider" min="1" max="25" value="3"
+                oninput="updateShift(this.value)"/>
+              <span class="shift-display" id="shiftNum">3</span>
+            </div>
+          </div>
+          <div class="btn-group">
+            <button id="decryptBtn" class="btn btn-success" onclick="decrypt()">🔓 Decrypt</button>
+            <button class="btn btn-secondary" onclick="clearAll()">✕ Clear</button>
+          </div>
+        </div>
+        <!-- Brute Force Mode -->
+        <div id="bruteForcePanel" style="display:none;">
+          <div class="alert alert-warning mb-3">
+            ⚠️ <span>Brute force will try all 25 possible shifts. Review results to find the meaningful plaintext.</span>
+          </div>
+          <div class="btn-group">
+            <button id="bruteBtn" class="btn btn-danger" onclick="bruteForce()">💥 Launch Attack</button>
+            <button class="btn btn-secondary" onclick="clearAll()">✕ Clear</button>
+          </div>
+        </div>
+      </div>
+      <!-- ── OUTPUT PANEL ── -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon green">✅</div>
+          <span class="card-title">DECRYPTED OUTPUT</span>
+        </div>
+        <div id="knownOutput">
+          <label class="form-label">Decrypted Message</label>
+          <div class="output-box scanline-effect" id="outputText" style="min-height:160px;color:var(--accent-green);">
+            <span class="output-placeholder">Decrypted plaintext will appear here…</span>
+          </div>
+          <button class="copy-btn" onclick="copyOutput('outputText')">📋 Copy</button>
+          <div class="mt-3" id="outputStats" style="display:none;">
+            <label class="form-label">Stats</label>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value" id="oShift" style="color:var(--accent-pink);">-</div>
+                <div class="stat-label">Shift Used</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" id="oChars">0</div>
+                <div class="stat-label">Chars</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" id="oEntropy">-</div>
+                <div class="stat-label">Entropy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Brute Force Results -->
+        <div id="bruteOutput" style="display:none;">
+          <label class="form-label">All 25 Shift Attempts</label>
+          <div style="position:relative;">
+            <input type="text" id="bfSearch" class="form-control mb-2" placeholder="🔍 Search decryption results…" oninput="filterBF(this.value)" style="height:40px;"/>
+          </div>
+          <div style="max-height:400px;overflow-y:auto;border:1px solid var(--border-subtle);border-radius:var(--radius-md);">
+            <table class="bf-table" id="bfTable">
+              <thead>
+                <tr>
+                  <th>Shift</th>
+                  <th>Decrypted Text</th>
+                  <th>Use</th>
+                </tr>
+              </thead>
+              <tbody id="bfBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ── FREQUENCY ANALYSIS ── -->
+    <div class="card mt-3" id="freqCard" style="display:none;">
+      <div class="card-header">
+        <div class="card-icon purple">📊</div>
+        <span class="card-title">FREQUENCY ANALYSIS</span>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label class="form-label" style="color:var(--accent-pink);">Ciphertext Frequencies</label>
+          <div class="freq-chart" id="freqCipherChart"></div>
+        </div>
+        <div>
+          <label class="form-label" style="color:var(--accent-green);">Decrypted Frequencies</label>
+          <div class="freq-chart" id="freqDecChart"></div>
+        </div>
+      </div>
+      <div class="alert alert-info mt-3">
+        📈 <span>In English text, <strong>E, T, A, O, I, N</strong> are the most frequent letters. Compare the decrypted distribution with English frequency tables to verify your decryption!</span>
+      </div>
+    </div>
+  </div>
+</section>
+<footer class="footer">
+  <p>🔐 CIPHERX &nbsp;|&nbsp; Decrypt Page &nbsp;|&nbsp; <a href="/" style="color:var(--accent-cyan);">Back to Home</a></p>
+</footer>
+<div class="toast-container" id="toastContainer"></div>
+<script src="/static/js/common.js"></script>
+<script>
+  let bfData = [];
+  let currentMode = 'known';
+  // ── Load from localStorage (sent from encrypt page) ──
+  window.addEventListener('load', () => {
+    const savedText  = localStorage.getItem('cipherxDecryptText');
+    const savedShift = localStorage.getItem('cipherxDecryptShift');
+    if (savedText) {
+      document.getElementById('inputText').value = savedText;
+      localStorage.removeItem('cipherxDecryptText');
+    }
+    if (savedShift) {
+      document.getElementById('shiftSlider').value = savedShift;
+      updateShift(savedShift);
+      localStorage.removeItem('cipherxDecryptShift');
+    }
+  });
+  function updateShift(val) {
+    document.getElementById('shiftNum').textContent = val;
+    const pct = ((val - 1) / 24 * 100).toFixed(1);
+    document.getElementById('shiftSlider').style.setProperty('--slider-pct', pct + '%');
+  }
+  function switchMode(mode) {
+    currentMode = mode;
+    const isKnown = mode === 'known';
+    document.getElementById('knownKeyPanel').style.display  = isKnown ? 'block' : 'none';
+    document.getElementById('bruteForcePanel').style.display= isKnown ? 'none' : 'block';
+    document.getElementById('knownOutput').style.display    = isKnown ? 'block' : 'none';
+    document.getElementById('bruteOutput').style.display    = isKnown ? 'none' : 'none';
+    document.getElementById('tabKnown').className = 'btn ' + (isKnown ? 'btn-primary' : 'btn-secondary');
+    document.getElementById('tabBrute').className = 'btn ' + (!isKnown ? 'btn-danger' : 'btn-secondary');
+    document.getElementById('freqCard').style.display = 'none';
+  }
+  async function decrypt() {
+    const text  = document.getElementById('inputText').value.trim();
+    const shift = parseInt(document.getElementById('shiftSlider').value);
+    if (!text) { showToast('Please enter ciphertext to decrypt!', 'error'); return; }
+    const btn = document.getElementById('decryptBtn');
+    btn.innerHTML = '<span class="spinner"></span> Decrypting…';
+    btn.disabled  = true;
+    try {
+      const res  = await fetch('/api/decrypt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, shift })
+      });
+      const data = await res.json();
+      document.getElementById('outputText').textContent = data.decrypted;
+      document.getElementById('outputText').classList.add('glow');
+      document.getElementById('outputStats').style.display = 'grid';
+      document.getElementById('oShift').textContent   = shift;
+      document.getElementById('oChars').textContent   = data.stats.total_chars;
+      document.getElementById('oEntropy').textContent = data.stats.entropy;
+      document.getElementById('freqCard').style.display = 'block';
+      renderFreqChart('freqCipherChart', data.freq_plain, 'var(--accent-pink)');
+      renderFreqChart('freqDecChart',    data.freq_dec,   'var(--accent-green)');
+      showToast('Message decrypted! 🔓', 'success');
+    } catch(e) {
+      showToast('Decryption failed: ' + e.message, 'error');
+    } finally {
+      btn.innerHTML = '🔓 Decrypt';
+      btn.disabled  = false;
+    }
+  }
+  async function bruteForce() {
+    const text = document.getElementById('inputText').value.trim();
+    if (!text) { showToast('Please enter ciphertext first!', 'error'); return; }
+    const btn = document.getElementById('bruteBtn');
+    btn.innerHTML = '<span class="spinner"></span> Attacking…';
+    btn.disabled  = true;
+    try {
+      const res  = await fetch('/api/brute-force', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      const data = await res.json();
+      bfData = data.results;
+      document.getElementById('bruteOutput').style.display = 'block';
+      renderBFTable(bfData);
+      showToast(`Brute force complete! ${bfData.length} shifts tried. 💥`, 'success');
+    } catch(e) {
+      showToast('Attack failed: ' + e.message, 'error');
+    } finally {
+      btn.innerHTML = '💥 Launch Attack';
+      btn.disabled  = false;
+    }
+  }
+  function renderBFTable(results) {
+    const tbody = document.getElementById('bfBody');
+    tbody.innerHTML = '';
+    results.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="bf-shift-badge">${r.shift}</span></td>
+        <td style="max-width:400px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(r.text)}</td>
+        <td>
+          <button onclick="selectShift(${r.shift},'${escJs(r.text)}')"
+            style="padding:0.3rem 0.6rem;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.2);color:var(--accent-green);border-radius:6px;cursor:pointer;font-size:0.75rem;">
+            ✓ Use
+          </button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }
+  function filterBF(q) {
+    const filtered = bfData.filter(r => r.text.toLowerCase().includes(q.toLowerCase()));
+    renderBFTable(filtered);
+  }
+  function selectShift(shift, text) {
+    document.getElementById('shiftSlider').value = shift;
+    updateShift(shift);
+    document.getElementById('outputText').textContent = text;
+    switchMode('known');
+    document.getElementById('outputStats').style.display = 'grid';
+    document.getElementById('oShift').textContent = shift;
+    showToast(`Shift ${shift} selected as decryption key! ✅`, 'success');
+  }
+  function clearAll() {
+    document.getElementById('inputText').value = '';
+    document.getElementById('outputText').innerHTML = '<span class="output-placeholder">Decrypted plaintext will appear here…</span>';
+    document.getElementById('outputText').classList.remove('glow');
+    document.getElementById('outputStats').style.display = 'none';
+    document.getElementById('bruteOutput').style.display = 'none';
+    document.getElementById('freqCard').style.display    = 'none';
+    bfData = [];
+  }
+  function renderFreqChart(containerId, freqData, color) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    const maxPct = Math.max(...Object.values(freqData).map(v => v.percentage));
+    Object.entries(freqData).forEach(([letter, data]) => {
+      const barH = maxPct > 0 ? (data.percentage / maxPct * 80).toFixed(1) : 0;
+      const wrap = document.createElement('div');
+      wrap.className = 'freq-bar-wrap';
+      wrap.title = `${letter}: ${data.percentage}%`;
+      wrap.innerHTML = `
+        <div class="freq-bar" style="height:${barH}px;background:${color};opacity:${data.percentage > 0 ? 0.5 + data.percentage/maxPct*0.5 : 0.1};"></div>
+        <div class="freq-letter">${letter}</div>`;
+      container.appendChild(wrap);
+    });
+  }
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function escJs(s) {
+    return s.replace(/'/g,"\\'").replace(/\n/g,'\\n');
+  }
+  updateShift(3);
+</script>
+</body>
+</html>
