@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About – CipherX | History of Cryptography</title>
+  <meta name="description" content="Learn about the Caesar cipher's history, how cryptanalysis works, and the evolution of encryption in cybersecurity."/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+<div class="bg-animated"></div>
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="logo-icon">🔐</div>
+    <span class="brand-name">CIPHERX</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">🏠 Home</a></li>
+    <li><a href="/encrypt">🔒 Encrypt</a></li>
+    <li><a href="/decrypt">🔓 Decrypt</a></li>
+    <li><a href="/tools">🛠️ Tools</a></li>
+    <li><a href="/about" class="active">📖 About</a></li>
+  </ul>
+</nav>
+<section class="page-hero">
+  <div class="badge" style="border-color:rgba(255,165,0,0.5);color:var(--accent-amber);">📖 History & Theory</div>
+  <h1 class="page-title">
+    <span style="background:linear-gradient(135deg,var(--accent-amber),var(--accent-pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">THE STORY OF</span><br/>
+    <span class="gradient-text">CRYPTOGRAPHY</span>
+  </h1>
+  <p class="page-subtitle">From Julius Caesar's battlefield cipher to modern AES encryption — explore how humanity has protected secret messages for over 2,000 years.</p>
+</section>
+<section class="section">
+  <div class="container">
+    <!-- ── WHAT IS CAESAR CIPHER ── -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <div class="card-icon amber">🏛️</div>
+        <span class="card-title">WHAT IS THE CAESAR CIPHER?</span>
+      </div>
+      <div class="grid-2">
+        <div>
+          <p style="color:var(--text-muted);line-height:1.8;margin-bottom:1rem;">
+            The <strong style="color:var(--accent-cyan);">Caesar Cipher</strong> is one of the earliest and simplest known encryption techniques.
+            Named after <strong>Julius Caesar</strong>, the Roman military general and statesman, it is a type of
+            <em>substitution cipher</em> where each letter in the plaintext is shifted a certain number of places
+            down the alphabet.
+          </p>
+          <p style="color:var(--text-muted);line-height:1.8;margin-bottom:1rem;">
+            Caesar reportedly used a shift of 3 to communicate secretly with his generals. A shift of 3 means:
+            <br/><code style="color:var(--accent-green);">A → D, B → E, C → F, ..., X → A, Y → B, Z → C</code>
+          </p>
+          <div class="alert alert-info">
+            💡 <span>Suetonius (a Roman historian) documented this cipher in his work <em>"The Twelve Caesars"</em>, written around 121 AD — making it one of the oldest cryptographic techniques we know of!</span>
+          </div>
+        </div>
+        <div>
+          <!-- Interactive Shift Visualizer -->
+          <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:1.5rem;">
+            <label class="form-label">Interactive Demonstration</label>
+            <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--accent-green);letter-spacing:3px;margin-bottom:0.5rem;" id="demoPlain">A B C D E F G H I J K L M</p>
+            <p style="font-size:0.7rem;color:var(--text-muted);text-align:center;margin-bottom:0.5rem;">↓ Shift <span id="demoShiftVal">3</span></p>
+            <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--accent-pink);letter-spacing:3px;margin-bottom:1rem;" id="demoCipher">D E F G H I J K L M N O P</p>
+            <input type="range" class="shift-slider" min="1" max="25" value="3"
+              oninput="updateAboutDemo(this.value)" style="width:100%;"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ── TIMELINE ── -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <div class="card-icon cyan">⏳</div>
+        <span class="card-title">TIMELINE OF CRYPTOGRAPHY</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot">🏛️</div>
+          <div class="timeline-content">
+            <h4>~50 BC — JULIUS CAESAR</h4>
+            <p>Caesar uses a shift-3 substitution cipher to encrypt military messages. Letters are shifted 3 positions forward in the Latin alphabet — "VENI VIDI VICI" would encrypt to "YHQL YLGL YLFL".</p>
+            <div style="margin-top:0.5rem;"><span class="tag tag-amber">Classical Cipher</span></div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">📜</div>
+          <div class="timeline-content">
+            <h4>800 AD — AL-KINDI'S CRYPTANALYSIS</h4>
+            <p>Arab polymath Al-Kindi writes the <em>Manuscript on Deciphering Cryptographic Messages</em>, describing frequency analysis — the first scientific method to crack substitution ciphers like Caesar.</p>
+            <div style="margin-top:0.5rem;"><span class="tag tag-purple">Cryptanalysis Born</span></div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">🔑</div>
+          <div class="timeline-content">
+            <h4>1553 — VIGENÈRE CIPHER</h4>
+            <p>Giovan Battista Bellaso (later credited to Vigenère) introduces the polyalphabetic cipher — using a keyword to vary the shift for each letter. This cipher was called <em>"le chiffre indéchiffrable"</em> (the indecipherable cipher).</p>
+            <div style="margin-top:0.5rem;"><span class="tag tag-cyan">Polyalphabetic</span></div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">⚙️</div>
+          <div class="timeline-content">
+            <h4>1918 — THE ENIGMA MACHINE</h4>
+            <p>Arthur Scherbius invents the Enigma machine — an electro-mechanical cipher device used by Nazi Germany in WWII. Alan Turing and the Bletchley Park team crack it, changing the outcome of the war.</p>
+            <div style="margin-top:0.5rem;"><span class="tag tag-pink">Mechanical Cipher</span></div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">💻</div>
+          <div class="timeline-content">
+            <h4>1977 — DES (Data Encryption Standard)</h4>
+            <p>IBM and NSA develop DES — the first standardized electronic encryption algorithm, using 56-bit keys. It dominated encryption for 20 years before being cracked in 1999.</p>
+            <div style="margin-top:0.5rem;"><span class="tag tag-green">Digital Era</span></div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">🛡️</div>
+          <div class="timeline-content">
+            <h4>2001 — AES (Advanced Encryption Standard)</h4>
+            <p>NIST selects Rijndael as the new AES standard. With 128, 192, or 256-bit keys, AES is the gold standard used in virtually all modern encryption — from HTTPS to WhatsApp end-to-end encryption.</p>
+            <div style="margin-top:0.5rem;"><span class="tag tag-cyan">Modern Standard</span></div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">🔮</div>
+          <div class="timeline-content">
+            <h4>Future — Quantum Cryptography</h4>
+            <p>Quantum computers threaten to break RSA and ECC encryption. Post-quantum cryptography (CRYSTALS-Kyber, NTRU) is being standardized by NIST to secure the next generation of communications.</p>
+            <div style="margin-top:0.5rem;"><span class="tag tag-purple">Quantum Era</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ── HOW CAESAR WORKS ── -->
+    <div class="grid-2 mb-4">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon green">🔢</div>
+          <span class="card-title">MATHEMATICAL MODEL</span>
+        </div>
+        <p style="color:var(--text-muted);font-size:0.85rem;line-height:1.8;margin-bottom:1rem;">
+          The Caesar cipher operates on the modular arithmetic principle:
+        </p>
+        <div style="background:rgba(0,0,0,0.4);border-radius:var(--radius-md);padding:1.25rem;font-family:var(--font-mono);margin-bottom:1rem;">
+          <div style="color:var(--accent-cyan);margin-bottom:0.75rem;">
+            <strong>Encryption:</strong><br/>
+            <span style="color:var(--text-primary);">E(x) = (x + n) mod 26</span>
+          </div>
+          <div style="color:var(--accent-pink);">
+            <strong>Decryption:</strong><br/>
+            <span style="color:var(--text-primary);">D(x) = (x - n + 26) mod 26</span>
+          </div>
+        </div>
+        <p style="color:var(--text-muted);font-size:0.8rem;line-height:1.6;">
+          Where <code style="color:var(--accent-cyan);">x</code> = position of letter (A=0, B=1, ..., Z=25) and <code style="color:var(--accent-cyan);">n</code> = shift key.
+          The modulo 26 ensures the result wraps around the alphabet.
+        </p>
+        <div class="alert alert-info mt-3">
+          🔄 <span>Example: 'Z' (25) shifted by 3 → (25+3) mod 26 = 2 → 'C'</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon pink">⚠️</div>
+          <span class="card-title">WEAKNESSES & ATTACKS</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.85rem;">
+          <div style="padding:0.75rem;background:rgba(255,45,120,0.06);border:1px solid rgba(255,45,120,0.15);border-radius:var(--radius-sm);">
+            <div style="color:var(--accent-pink);font-weight:600;margin-bottom:0.25rem;">💥 Brute Force Attack</div>
+            <div style="color:var(--text-muted);">Only 25 possible shifts — a computer can try all in microseconds. No key space = zero security.</div>
+          </div>
+          <div style="padding:0.75rem;background:rgba(255,45,120,0.06);border:1px solid rgba(255,45,120,0.15);border-radius:var(--radius-sm);">
+            <div style="color:var(--accent-pink);font-weight:600;margin-bottom:0.25rem;">📊 Frequency Analysis</div>
+            <div style="color:var(--text-muted);">Letter frequencies are preserved. E is most common in English — find the most frequent cipher letter to guess the shift.</div>
+          </div>
+          <div style="padding:0.75rem;background:rgba(255,45,120,0.06);border:1px solid rgba(255,45,120,0.15);border-radius:var(--radius-sm);">
+            <div style="color:var(--accent-pink);font-weight:600;margin-bottom:0.25rem;">👁️ Known Plaintext Attack</div>
+            <div style="color:var(--text-muted);">If you know one word in the plaintext, you instantly know the shift for the entire message.</div>
+          </div>
+          <div style="padding:0.75rem;background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.15);border-radius:var(--radius-sm);">
+            <div style="color:var(--accent-green);font-weight:600;margin-bottom:0.25rem;">✅ Educational Value</div>
+            <div style="color:var(--text-muted);">Despite being weak, Caesar cipher is the foundation for understanding modern encryption, key spaces, and cryptanalysis.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ── CIPHER COMPARISON ── -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <div class="card-icon purple">📋</div>
+        <span class="card-title">CIPHER COMPARISON TABLE</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border-subtle);">
+              <th style="padding:0.75rem;text-align:left;color:var(--accent-cyan);letter-spacing:1px;text-transform:uppercase;font-size:0.75rem;">Cipher</th>
+              <th style="padding:0.75rem;text-align:left;color:var(--accent-cyan);letter-spacing:1px;text-transform:uppercase;font-size:0.75rem;">Type</th>
+              <th style="padding:0.75rem;text-align:left;color:var(--accent-cyan);letter-spacing:1px;text-transform:uppercase;font-size:0.75rem;">Key Space</th>
+              <th style="padding:0.75rem;text-align:left;color:var(--accent-cyan);letter-spacing:1px;text-transform:uppercase;font-size:0.75rem;">Security</th>
+              <th style="padding:0.75rem;text-align:left;color:var(--accent-cyan);letter-spacing:1px;text-transform:uppercase;font-size:0.75rem;">Era</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid rgba(0,255,255,0.04);">
+              <td style="padding:0.75rem;color:var(--text-primary);font-weight:600;">Caesar Cipher</td>
+              <td style="padding:0.75rem;"><span class="tag tag-amber">Monoalphabetic</span></td>
+              <td style="padding:0.75rem;font-family:var(--font-mono);color:var(--accent-pink);">25</td>
+              <td style="padding:0.75rem;color:var(--accent-pink);">⚠ None</td>
+              <td style="padding:0.75rem;color:var(--text-muted);">~50 BC</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(0,255,255,0.04);">
+              <td style="padding:0.75rem;color:var(--text-primary);font-weight:600;">Atbash Cipher</td>
+              <td style="padding:0.75rem;"><span class="tag tag-amber">Monoalphabetic</span></td>
+              <td style="padding:0.75rem;font-family:var(--font-mono);color:var(--accent-pink);">1</td>
+              <td style="padding:0.75rem;color:var(--accent-pink);">⚠ None</td>
+              <td style="padding:0.75rem;color:var(--text-muted);">~600 BC</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(0,255,255,0.04);">
+              <td style="padding:0.75rem;color:var(--text-primary);font-weight:600;">Vigenère Cipher</td>
+              <td style="padding:0.75rem;"><span class="tag tag-cyan">Polyalphabetic</span></td>
+              <td style="padding:0.75rem;font-family:var(--font-mono);color:var(--accent-amber);">26^n</td>
+              <td style="padding:0.75rem;color:var(--accent-amber);">⚡ Low-Medium</td>
+              <td style="padding:0.75rem;color:var(--text-muted);">1553 AD</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(0,255,255,0.04);">
+              <td style="padding:0.75rem;color:var(--text-primary);font-weight:600;">DES</td>
+              <td style="padding:0.75rem;"><span class="tag tag-purple">Block Cipher</span></td>
+              <td style="padding:0.75rem;font-family:var(--font-mono);color:var(--accent-amber);">2^56</td>
+              <td style="padding:0.75rem;color:var(--accent-amber);">⚡ Deprecated</td>
+              <td style="padding:0.75rem;color:var(--text-muted);">1977 AD</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(0,255,255,0.04);">
+              <td style="padding:0.75rem;color:var(--text-primary);font-weight:600;">AES-256</td>
+              <td style="padding:0.75rem;"><span class="tag tag-green">Block Cipher</span></td>
+              <td style="padding:0.75rem;font-family:var(--font-mono);color:var(--accent-green);">2^256</td>
+              <td style="padding:0.75rem;color:var(--accent-green);">✅ Excellent</td>
+              <td style="padding:0.75rem;color:var(--text-muted);">2001 AD</td>
+            </tr>
+            <tr>
+              <td style="padding:0.75rem;color:var(--text-primary);font-weight:600;">RSA-2048</td>
+              <td style="padding:0.75rem;"><span class="tag tag-purple">Asymmetric</span></td>
+              <td style="padding:0.75rem;font-family:var(--font-mono);color:var(--accent-green);">2^2048</td>
+              <td style="padding:0.75rem;color:var(--accent-green);">✅ Excellent</td>
+              <td style="padding:0.75rem;color:var(--text-muted);">1977 AD</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- ── ABOUT APP ── -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon cyan">ℹ️</div>
+        <span class="card-title">ABOUT CIPHERX</span>
+      </div>
+      <div class="grid-2">
+        <div>
+          <p style="color:var(--text-muted);line-height:1.8;margin-bottom:1rem;">
+            <strong style="color:var(--text-primary);">CipherX</strong> is an educational cybersecurity toolkit built to demonstrate classical
+            cryptographic principles in an interactive and visually engaging way.
+          </p>
+          <p style="color:var(--text-muted);line-height:1.8;margin-bottom:1rem;">
+            It features a Python Flask backend for server-side cipher computations and hash generation,
+            paired with a modern HTML/CSS/JavaScript frontend for real-time interactivity.
+          </p>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1rem;">
+            <span class="tag tag-cyan">Python Flask</span>
+            <span class="tag tag-purple">HTML5 / CSS3</span>
+            <span class="tag tag-green">JavaScript</span>
+            <span class="tag tag-pink">Cryptography</span>
+            <span class="tag tag-amber">Cybersecurity</span>
+            <span class="tag tag-cyan">REST API</span>
+          </div>
+        </div>
+        <div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-value" style="color:var(--accent-cyan);">5</div>
+              <div class="stat-label">Pages</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" style="color:var(--accent-purple);">8</div>
+              <div class="stat-label">API Endpoints</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" style="color:var(--accent-pink);">6</div>
+              <div class="stat-label">Cipher Types</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" style="color:var(--accent-green);">3</div>
+              <div class="stat-label">Hash Functions</div>
+            </div>
+          </div>
+          <div class="btn-group mt-3">
+            <a href="/encrypt" class="btn btn-primary">Start Exploring 🚀</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer class="footer">
+  <p>🔐 CIPHERX &nbsp;|&nbsp; About & History &nbsp;|&nbsp; <a href="/" style="color:var(--accent-cyan);">Back to Home</a></p>
+</footer>
+<div class="toast-container" id="toastContainer"></div>
+<script src="/static/js/common.js"></script>
+<script>
+  function updateAboutDemo(shift) {
+    shift = parseInt(shift);
+    document.getElementById('demoShiftVal').textContent = shift;
+    const letters = 'ABCDEFGHIJKLM'.split('');
+    const plain   = letters.join(' ');
+    const cipher  = letters.map(l => String.fromCharCode(((l.charCodeAt(0) - 65 + shift) % 26) + 65)).join(' ');
+    document.getElementById('demoPlain').textContent  = plain;
+    document.getElementById('demoCipher').textContent = cipher;
+  }
+</script>
+</body>
+</html>
