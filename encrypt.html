@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Encrypt – CipherX</title>
+  <meta name="description" content="Encrypt your messages with the Caesar cipher. View frequency analysis and character statistics."/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+<div class="bg-animated"></div>
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="logo-icon">🔐</div>
+    <span class="brand-name">CIPHERX</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">🏠 Home</a></li>
+    <li><a href="/encrypt" class="active">🔒 Encrypt</a></li>
+    <li><a href="/decrypt">🔓 Decrypt</a></li>
+    <li><a href="/tools">🛠️ Tools</a></li>
+    <li><a href="/about">📖 About</a></li>
+  </ul>
+</nav>
+<section class="page-hero">
+  <div class="badge">🔒 Caesar Cipher Encryptor</div>
+  <h1 class="page-title"><span class="gradient-text">ENCRYPT</span></h1>
+  <p class="page-subtitle">Transform your plaintext into an unreadable cipher. Adjust the shift key and analyze the security of your message.</p>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="grid-2">
+      <!-- ── INPUT PANEL ── -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon cyan">✏️</div>
+          <span class="card-title">PLAINTEXT INPUT</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message to Encrypt</label>
+          <textarea id="inputText" class="form-control" rows="6"
+            placeholder="Enter your secret message here…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Shift Key (Caesar Key)</label>
+          <div class="shift-control">
+            <input type="range" id="shiftSlider" class="shift-slider" min="1" max="25" value="3"
+              oninput="updateShift(this.value)"/>
+            <span class="shift-display" id="shiftNum">3</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:0.5rem;">
+            <span class="text-muted">← Weaker (1)</span>
+            <span class="text-muted">Stronger (25) →</span>
+          </div>
+        </div>
+        <div class="alert alert-info mb-2">
+          💡 <span>The shift key tells you how many positions each letter moves forward in the alphabet. A shift of 3 maps A→D, B→E, etc.</span>
+        </div>
+        <div class="btn-group">
+          <button id="encryptBtn" class="btn btn-primary" onclick="encrypt()">🔒 Encrypt</button>
+          <button class="btn btn-secondary" onclick="randomKey()">🎲 Random Key</button>
+          <button class="btn btn-danger" onclick="clearAll()">✕ Clear</button>
+        </div>
+        <!-- Input Stats -->
+        <div class="mt-3" id="inputStats" style="display:none;">
+          <label class="form-label">Input Analysis</label>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-value" id="iChars">0</div>
+              <div class="stat-label">Chars</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="iLetters">0</div>
+              <div class="stat-label">Letters</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="iDigits">0</div>
+              <div class="stat-label">Digits</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="iEntropy">0</div>
+              <div class="stat-label">Entropy</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ── OUTPUT PANEL ── -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon green">🔐</div>
+          <span class="card-title">CIPHERTEXT OUTPUT</span>
+        </div>
+        <label class="form-label">Encrypted Message</label>
+        <div class="output-box scanline-effect" id="outputText" style="min-height:160px;">
+          <span class="output-placeholder">Encrypted ciphertext will appear here…</span>
+        </div>
+        <button class="copy-btn" onclick="copyOutput('outputText')">📋 Copy</button>
+        <div class="mt-3" id="outputStats" style="display:none;">
+          <label class="form-label">Output Analysis</label>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-value" id="oShift" style="color:var(--accent-purple);">-</div>
+              <div class="stat-label">Shift Used</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="oEntropy">-</div>
+              <div class="stat-label">Entropy</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="oChars">0</div>
+              <div class="stat-label">Chars</div>
+            </div>
+          </div>
+        </div>
+        <!-- Security Indicator -->
+        <div class="mt-3" id="securityMeter" style="display:none;">
+          <label class="form-label">Estimated Security</label>
+          <div class="progress-bar">
+            <div class="progress-fill" id="securityFill" style="width:0%"></div>
+          </div>
+          <div id="securityLabel" class="text-muted mt-2" style="font-size:0.8rem;"></div>
+        </div>
+        <div class="btn-group mt-2">
+          <button class="btn btn-secondary" onclick="sendToDecrypt()">🔓 Send to Decrypt</button>
+          <button class="btn btn-secondary" onclick="downloadOutput()">💾 Download</button>
+        </div>
+      </div>
+    </div>
+    <!-- ── FREQUENCY ANALYSIS ── -->
+    <div class="card mt-3" id="freqCard" style="display:none;">
+      <div class="card-header">
+        <div class="card-icon purple">📊</div>
+        <span class="card-title">FREQUENCY ANALYSIS</span>
+        <span class="tag tag-purple" style="margin-left:auto;">Cryptanalysis</span>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label class="form-label" style="color:var(--accent-green);">Plaintext Frequencies</label>
+          <div class="freq-chart" id="freqPlainChart"></div>
+        </div>
+        <div>
+          <label class="form-label" style="color:var(--accent-cyan);">Ciphertext Frequencies</label>
+          <div class="freq-chart" id="freqEncChart"></div>
+        </div>
+      </div>
+      <div class="alert alert-warning mt-3">
+        🔍 <span>Notice how the frequency distribution <strong>shifts</strong> but the shape remains identical — this is the weakness of Caesar cipher that cryptanalysts exploit!</span>
+      </div>
+    </div>
+  </div>
+</section>
+<footer class="footer">
+  <p>🔐 CIPHERX &nbsp;|&nbsp; Encrypt Page &nbsp;|&nbsp; <a href="/" style="color:var(--accent-cyan);">Back to Home</a></p>
+</footer>
+<div class="toast-container" id="toastContainer"></div>
+<script src="/static/js/common.js"></script>
+<script>
+  let lastEncrypted = '';
+  function updateShift(val) {
+    document.getElementById('shiftNum').textContent = val;
+    const pct = ((val - 1) / 24 * 100).toFixed(1);
+    document.getElementById('shiftSlider').style.setProperty('--slider-pct', pct + '%');
+  }
+  async function encrypt() {
+    const text  = document.getElementById('inputText').value.trim();
+    const shift = parseInt(document.getElementById('shiftSlider').value);
+    if (!text) { showToast('Please enter a message to encrypt!', 'error'); return; }
+    const btn = document.getElementById('encryptBtn');
+    btn.innerHTML = '<span class="spinner"></span> Encrypting…';
+    btn.disabled  = true;
+    try {
+      const res  = await fetch('/api/encrypt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, shift })
+      });
+      const data = await res.json();
+      lastEncrypted = data.encrypted;
+      // Output
+      document.getElementById('outputText').textContent = data.encrypted;
+      document.getElementById('outputText').classList.add('glow');
+      // Input stats
+      document.getElementById('inputStats').style.display = 'grid';
+      document.getElementById('iChars').textContent   = data.stats.total_chars;
+      document.getElementById('iLetters').textContent = data.stats.letters;
+      document.getElementById('iDigits').textContent  = data.stats.digits;
+      document.getElementById('iEntropy').textContent = data.stats.entropy;
+      // Output stats
+      document.getElementById('outputStats').style.display = 'grid';
+      document.getElementById('oShift').textContent   = data.shift;
+      document.getElementById('oEntropy').textContent = data.enc_stats.entropy;
+      document.getElementById('oChars').textContent   = data.enc_stats.total_chars;
+      // Security meter
+      document.getElementById('securityMeter').style.display = 'block';
+      const secPct = Math.min((shift / 25) * 40 + (data.stats.letters > 5 ? 30 : 10) + (data.stats.entropy * 5), 100).toFixed(0);
+      document.getElementById('securityFill').style.width = secPct + '%';
+      document.getElementById('securityLabel').textContent =
+        `Security Score: ${secPct}% — Caesar cipher is a classical cipher (not secure for modern use). Shift = ${shift}`;
+      // Frequency chart
+      document.getElementById('freqCard').style.display = 'block';
+      renderFreqChart('freqPlainChart', data.freq_plain, 'var(--accent-green)');
+      renderFreqChart('freqEncChart',   data.freq_enc,   'var(--accent-cyan)');
+      showToast('Message encrypted successfully! 🔒', 'success');
+    } catch(e) {
+      showToast('Encryption failed: ' + e.message, 'error');
+    } finally {
+      btn.innerHTML = '🔒 Encrypt';
+      btn.disabled  = false;
+    }
+  }
+  async function randomKey() {
+    const res  = await fetch('/api/random-key');
+    const data = await res.json();
+    document.getElementById('shiftSlider').value = data.shift;
+    updateShift(data.shift);
+    showToast(`Random shift key set to ${data.shift}! 🎲`, 'info');
+  }
+  function clearAll() {
+    document.getElementById('inputText').value = '';
+    document.getElementById('outputText').innerHTML = '<span class="output-placeholder">Encrypted ciphertext will appear here…</span>';
+    document.getElementById('outputText').classList.remove('glow');
+    document.getElementById('inputStats').style.display  = 'none';
+    document.getElementById('outputStats').style.display = 'none';
+    document.getElementById('securityMeter').style.display = 'none';
+    document.getElementById('freqCard').style.display    = 'none';
+    lastEncrypted = '';
+  }
+  function sendToDecrypt() {
+    if (!lastEncrypted) { showToast('Nothing to send yet!', 'error'); return; }
+    localStorage.setItem('cipherxDecryptText', lastEncrypted);
+    localStorage.setItem('cipherxDecryptShift', document.getElementById('shiftSlider').value);
+    window.location.href = '/decrypt';
+  }
+  function downloadOutput() {
+    if (!lastEncrypted) { showToast('Nothing to download yet!', 'error'); return; }
+    const blob = new Blob([lastEncrypted], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'cipherx_encrypted.txt';
+    a.click();
+    showToast('Downloaded!', 'success');
+  }
+  function renderFreqChart(containerId, freqData, color) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    const maxPct = Math.max(...Object.values(freqData).map(v => v.percentage));
+    Object.entries(freqData).forEach(([letter, data]) => {
+      const pct = data.percentage;
+      const barH = maxPct > 0 ? (pct / maxPct * 80).toFixed(1) : 0;
+      const wrap = document.createElement('div');
+      wrap.className = 'freq-bar-wrap';
+      wrap.title = `${letter}: ${pct}%`;
+      wrap.innerHTML = `
+        <div class="freq-bar" style="height:${barH}px;background:${color};opacity:${pct > 0 ? 0.6 + pct/maxPct*0.4 : 0.1};"></div>
+        <div class="freq-letter">${letter}</div>`;
+      container.appendChild(wrap);
+    });
+  }
+  // Auto-load shift
+  updateShift(3);
+</script>
+</body>
+</html>
